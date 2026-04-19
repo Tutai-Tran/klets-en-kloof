@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Klets &amp; Kloof · Praat met de generaties</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bakbak+One&family=Fredoka:wght@500;600;700&family=Caveat:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --peach:#F5B79A;
+  --peach-soft:#FBD5BE;
+  --peach-deep:#EF9978;
+  --orange:#E85A1A;
+  --orange-deep:#C84A12;
+  --blue:#BDD7EC;
+  --blue-deep:#8FB9D8;
+  --cream:#F7EEDB;
+  --cream-warm:#FBF4E3;
+  --ink:#2A1B12;
+  --purple:#5E1A8A; /* issue killers */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--peach);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;overflow-x:hidden}
+body{min-height:100vh}
+img{display:block;max-width:100%}
+a{color:inherit}
+.display{font-family:'Bakbak One',system-ui,sans-serif;letter-spacing:.01em;font-weight:400}
+.script{font-family:'Caveat',cursive}
+.fredoka{font-family:'Fredoka',system-ui,sans-serif}
+
+/* ========== TORN PAPER EDGES ========== */
+.torn-top, .torn-bottom{position:absolute;left:0;right:0;height:34px;pointer-events:none;z-index:3}
+.torn-top{top:-1px}
+.torn-bottom{bottom:-1px;transform:scaleY(-1)}
+
+/* ========== NAV ========== */
+.nav{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:4px;padding:6px;
+  background:rgba(247,238,219,.85);backdrop-filter:blur(10px);
+  border-radius:999px;z-index:100;
+  box-shadow:0 4px 18px rgba(42,27,18,.12);
+  border:1.5px solid rgba(42,27,18,.08);
+}
+.nav a{
+  text-decoration:none;padding:10px 16px;border-radius:999px;
+  font-size:13px;font-weight:600;color:var(--ink);
+  transition:all .2s;
+}
+.nav a:hover{background:var(--orange);color:var(--cream)}
+.nav .brand-dot{
+  width:42px;height:34px;
+  display:flex;align-items:center;justify-content:center;
+  margin:-2px 2px -2px 0;
+}
+.nav .brand-dot svg{width:100%;height:100%;display:block;overflow:visible}
+.nav a.brand-link{padding:4px 8px}
+.nav a.brand-link:hover{background:transparent}
+.nav a.brand-link:hover .brand-dot{transform:rotate(-6deg) scale(1.05);transition:transform .25s}
+
+/* ========== HERO ========== */
+.hero{
+  position:relative;min-height:100vh;padding:120px 6vw 80px;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 120%, rgba(189,215,236,.7), transparent 60%),
+    radial-gradient(ellipse 90% 60% at 50% -20%, rgba(245,183,154,.9), transparent 60%),
+    var(--peach);
+  display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;
+  overflow:hidden;
+}
+.hero-left{position:relative;z-index:2}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--cream);padding:8px 16px;border-radius:999px;
+  font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--orange-deep);
+  box-shadow:0 2px 0 rgba(42,27,18,.12);
+  margin-bottom:24px;
+}
+.hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero h1{
+  font-family:'Bakbak One';
+  font-size:clamp(72px,11vw,168px);line-height:.9;
+  color:var(--cream);
+  text-shadow:4px 6px 0 rgba(42,27,18,.15);
+  margin-bottom:20px;
+}
+.hero h1 .amp{color:var(--blue);display:inline-block;transform:rotate(-8deg)}
+.hero h1 .l1{display:block;transform:rotate(-2deg)}
+.hero h1 .l2{display:block;transform:rotate(2deg);margin-left:30px}
+.hero-tagline{
+  font-family:'Bakbak One';
+  font-size:clamp(18px,2vw,26px);color:var(--orange);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:32px;
+}
+.hero-lead{
+  max-width:480px;font-size:18px;line-height:1.55;color:var(--ink);
+  margin-bottom:32px;
+}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 28px;border-radius:999px;border:none;cursor:pointer;
+  font-weight:700;font-size:15px;text-decoration:none;
+  transition:transform .15s, box-shadow .15s;
+  font-family:'DM Sans';
+}
+.btn-primary{background:var(--orange);color:var(--cream);box-shadow:0 4px 0 var(--orange-deep)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--orange-deep)}
+.btn-secondary{background:var(--cream);color:var(--ink);box-shadow:0 4px 0 rgba(42,27,18,.18)}
+.btn-secondary:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(42,27,18,.18)}
+
+.hero-right{position:relative;height:100%;min-height:560px;overflow:visible}
+.bubble-stack{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-mockup{
+  width:110%;max-width:none;height:auto;
+  transform:rotate(-4deg);
+  filter:drop-shadow(18px 28px 30px rgba(42,27,18,.22)) drop-shadow(4px 6px 0 rgba(42,27,18,.06));
+  animation:mockup-float 7s ease-in-out infinite;
+  position:relative;z-index:2;
+}
+@keyframes mockup-float{
+  0%,100%{transform:rotate(-4deg) translateY(0)}
+  50%{transform:rotate(-2deg) translateY(-18px)}
+}
+.orbit{
+  position:absolute;border-radius:50%;
+  animation:orbit-bob 5s ease-in-out infinite;
+  z-index:1;
+}
+.orbit-1{width:28px;height:28px;background:var(--orange);top:16%;right:8%;animation-delay:-1.2s;box-shadow:4px 5px 0 rgba(42,27,18,.12)}
+.orbit-2{width:18px;height:18px;background:var(--blue);bottom:22%;left:6%;animation-delay:-2.4s;box-shadow:3px 4px 0 rgba(42,27,18,.1)}
+.orbit-3{width:12px;height:12px;background:var(--cream);border:2px solid var(--ink);bottom:12%;right:18%;animation-delay:-3.6s}
+@keyframes orbit-bob{
+  0%,100%{transform:translate(0,0)}
+  50%{transform:translate(6px,-12px)}
+}
+.spark-a{top:6%;left:10%;width:56px;height:56px;animation:spin 9s linear infinite;z-index:3}
+.spark-b{bottom:10%;right:4%;width:46px;height:46px;animation:spin 12s linear infinite reverse;z-index:3}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* (legacy .bubble styles removed – hero now uses the viltjes mockup) */
+
+.sparkle{
+  position:absolute;pointer-events:none;
+}
+.sparkle svg{width:100%;height:100%}
+
+.hero-scroll{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.2em;
+  color:var(--ink);opacity:.6;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.hero-scroll .arrow{
+  width:2px;height:40px;background:var(--ink);position:relative;
+  animation:scroll-down 2s infinite;
+}
+@keyframes scroll-down{
+  0%{transform:scaleY(0);transform-origin:top}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}
+}
+
+/* ========== SECTION WRAPPER ========== */
+section{position:relative;padding:100px 6vw}
+.sec-label{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Bakbak One';text-transform:uppercase;
+  font-size:14px;letter-spacing:.15em;margin-bottom:20px;
+}
+.sec-label .num{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--orange);color:var(--cream);font-size:16px;
+}
+.sec-title{
+  font-family:'Bakbak One';
+  font-size:clamp(40px,6vw,88px);line-height:.95;
+  margin-bottom:24px;
+}
+
+/* ========== PROBLEM ========== */
+.problem{
+  background:var(--cream-warm);
+  color:var(--ink);
+}
+.problem .sec-title{color:var(--ink)}
+.problem-intro{max-width:720px;font-size:20px;line-height:1.6;margin-bottom:64px}
+.problem-intro strong{color:var(--orange);font-weight:700}
+
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:72px;
+}
+.stat{
+  background:var(--peach);border-radius:28px;padding:40px 32px;position:relative;
+  transform:rotate(var(--rot,-1deg));
+  box-shadow:6px 8px 0 rgba(42,27,18,.1);
+  overflow:hidden;
+  transition:transform .3s;
+}
+.stat:hover{transform:rotate(0deg) translateY(-4px)}
+.stat:nth-child(1){--rot:-1.5deg;background:var(--peach)}
+.stat:nth-child(2){--rot:1deg;background:var(--blue)}
+.stat:nth-child(3){--rot:-.5deg;background:var(--orange);color:var(--cream)}
+.stat .big{
+  font-family:'Bakbak One';font-size:clamp(72px,10vw,140px);line-height:.9;
+  color:var(--cream);display:block;
+  text-shadow:3px 4px 0 rgba(42,27,18,.15);
+}
+.stat:nth-child(2) .big{color:var(--cream)}
+.stat:nth-child(3) .big{color:var(--cream)}
+.stat .label{
+  font-size:15px;font-weight:600;line-height:1.4;margin-top:12px;
+  position:relative;z-index:2;
+}
+.stat .src{font-size:11px;opacity:.6;margin-top:12px;font-style:italic}
+
+/* Quotes */
+.quotes{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;
+  max-width:1100px;margin:0 auto;
+}
+.quote{
+  padding:32px 36px;border-radius:28px;position:relative;
+  font-family:'Bakbak One';font-size:clamp(22px,2.4vw,30px);
+  line-height:1.2;
+}
+.quote .who{
+  display:block;font-family:'DM Sans';font-size:13px;font-weight:600;
+  opacity:.7;margin-top:20px;text-transform:uppercase;letter-spacing:.1em;
+}
+.quote.young{
+  background:var(--blue);color:var(--ink);transform:rotate(-1deg);
+  box-shadow:6px 8px 0 rgba(42,27,18,.12);
+}
+.quote.young::before{
+  content:"";position:absolute;bottom:-20px;left:40px;
+  border:24px solid transparent;border-top-color:var(--blue);border-right:0;
+}
+.quote.old{
+  background:var(--orange);color:var(--cream);transform:rotate(1.5deg);
+  margin-top:50px;
+  box-shadow:6px 8px 0 rgba(42,27,18,.12);
+}
+.quote.old::before{
+  content:"";position:absolute;bottom:-20px;right:40px;
+  border:24px solid transparent;border-top-color:var(--orange);border-left:0;
+}
+.vs-badge{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-8deg);
+  background:var(--cream);border:3px solid var(--ink);
+  width:80px;height:80px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bakbak One';font-size:22px;
+  z-index:5;box-shadow:3px 4px 0 rgba(42,27,18,.2);
+}
+.quotes-wrap{position:relative}
+
+/* ========== GENERATIONS ========== */
+.generations{
+  background:var(--peach);
+  overflow:hidden;
+}
+.gen-strip{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:48px;
+}
+.gen-card{
+  background:var(--cream);border-radius:24px;padding:28px 22px;
+  position:relative;transform:rotate(var(--r,0deg)) translateY(var(--y,0));
+  box-shadow:4px 6px 0 rgba(42,27,18,.12);
+  transition:transform .3s;cursor:pointer;
+  border:2px solid rgba(42,27,18,.08);
+}
+.gen-card:hover{transform:rotate(0) translateY(-8px)}
+.gen-card:nth-child(1){--r:-2deg;--y:10px}
+.gen-card:nth-child(2){--r:1.5deg;--y:-10px}
+.gen-card:nth-child(3){--r:-1deg;--y:20px}
+.gen-card:nth-child(4){--r:2deg;--y:-15px}
+.gen-card:nth-child(5){--r:-1.5deg;--y:5px}
+.gen-years{
+  font-family:'Bakbak One';font-size:12px;opacity:.6;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.gen-name{
+  font-family:'Bakbak One';font-size:28px;line-height:1;margin-bottom:12px;
+  color:var(--orange);
+}
+.gen-card:nth-child(even) .gen-name{color:var(--blue-deep)}
+.gen-desc{font-size:13px;line-height:1.5;color:var(--ink)}
+.gen-emoji{
+  position:absolute;top:16px;right:16px;font-size:22px;
+  width:40px;height:40px;border-radius:50%;
+  background:var(--peach-soft);display:flex;align-items:center;justify-content:center;
+  font-family:'Bakbak One';color:var(--ink);
+}
+
+/* ========== CONCEPT / CARD DECK ========== */
+.concept{
+  background:var(--blue);color:var(--ink);
+  overflow:hidden;
+}
+.concept .sec-label .num{background:var(--orange)}
+.concept-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:32px;
+}
+.concept-text p{font-size:18px;line-height:1.6;margin-bottom:16px;max-width:480px}
+.concept-text strong{color:var(--orange-deep)}
+
+.deck-stage{
+  position:relative;aspect-ratio:1;max-width:520px;margin:0 auto;
+  perspective:1200px;
+}
+.card-item{
+  position:absolute;inset:0;border-radius:8px;
+  box-shadow:0 10px 40px rgba(42,27,18,.25), 0 2px 0 rgba(42,27,18,.15);
+  transition:transform .5s cubic-bezier(.2,.9,.3,1.2), opacity .4s;
+  overflow:hidden;
+  cursor:grab;
+  user-select:none;
+}
+.card-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  pointer-events:none;
+}
+
+.deck-ctrls{
+  display:flex;justify-content:center;gap:16px;margin-top:32px;
+  align-items:center;
+}
+.deck-btn{
+  width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--cream);box-shadow:0 4px 0 rgba(42,27,18,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bakbak One';font-size:20px;color:var(--ink);
+  transition:transform .15s;
+}
+.deck-btn:hover{transform:translateY(-2px)}
+.deck-btn.main{
+  width:76px;height:76px;background:var(--orange);color:var(--cream);
+  box-shadow:0 4px 0 var(--orange-deep);
+}
+.deck-counter{
+  font-family:'Bakbak One';font-size:14px;opacity:.7;
+  min-width:50px;text-align:center;
+}
+
+/* ========== HOW IT WORKS ========== */
+.how{
+  background:var(--cream-warm);
+}
+.steps{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;
+  position:relative;
+}
+.steps::before{
+  content:"";position:absolute;top:60px;left:8%;right:8%;
+  height:3px;background:repeating-linear-gradient(to right, var(--orange) 0 10px, transparent 10px 20px);
+  z-index:0;
+}
+.step{
+  background:var(--peach);border-radius:28px;padding:36px 28px;
+  position:relative;z-index:1;
+  box-shadow:5px 6px 0 rgba(42,27,18,.1);
+  transform:rotate(var(--r,-1deg));
+}
+.step:nth-child(2){background:var(--blue);--r:1deg}
+.step:nth-child(3){background:var(--orange);color:var(--cream);--r:-.5deg}
+.step-num{
+  font-family:'Bakbak One';font-size:72px;line-height:.9;
+  color:var(--cream);text-shadow:3px 4px 0 rgba(42,27,18,.15);
+  margin-bottom:16px;
+}
+.step:nth-child(3) .step-num{color:var(--peach)}
+.step-title{font-family:'Bakbak One';font-size:28px;line-height:1.05;margin-bottom:12px}
+.step-desc{font-size:15px;line-height:1.5}
+
+/* ========== GOAL ========== */
+.goal{
+  background:var(--orange);color:var(--cream);position:relative;overflow:hidden;
+}
+.goal .sec-label .num{background:var(--cream);color:var(--orange)}
+.goal-wrap{display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center}
+.goal-huge{
+  font-family:'Bakbak One';font-size:clamp(80px,14vw,220px);line-height:.85;
+}
+.goal-huge .plus{display:inline-block;transform:rotate(-6deg);color:var(--blue)}
+.goal-huge .pct{display:block;transform:rotate(2deg)}
+.goal-sub{font-family:'Bakbak One';font-size:clamp(24px,3vw,40px);margin-top:20px;line-height:1.05}
+.goal-desc{font-size:17px;line-height:1.6;max-width:400px;opacity:.92}
+.smart{
+  margin-top:32px;display:flex;flex-wrap:wrap;gap:8px;
+}
+.smart span{
+  background:rgba(247,238,219,.2);padding:8px 14px;border-radius:999px;
+  font-size:13px;font-weight:600;backdrop-filter:blur(4px);
+}
+.smart span b{font-family:'Bakbak One';font-weight:400;margin-right:6px;color:var(--blue)}
+
+/* ========== PARTNER (ISSUE KILLERS) ========== */
+.partner{
+  background:var(--cream-warm);
+  text-align:center;
+}
+.partner-inner{max-width:900px;margin:0 auto}
+.partner-label{
+  font-family:'Bakbak One';text-transform:uppercase;letter-spacing:.2em;
+  font-size:13px;opacity:.6;margin-bottom:20px;
+}
+.partner-logo-wrap{
+  display:inline-block;position:relative;margin:20px 0;
+  padding:40px 60px;
+  background:var(--cream);border-radius:32px;
+  box-shadow:6px 8px 0 rgba(42,27,18,.12);
+  transform:rotate(-2deg);
+}
+.partner-logo-wrap img{max-width:280px;height:auto}
+.partner-text{font-size:19px;line-height:1.6;margin-top:32px;color:var(--ink)}
+.partner-text .highlight{
+  background:linear-gradient(180deg, transparent 55%, var(--peach-soft) 55%);
+  padding:0 4px;
+}
+
+/* ========== TEAM ========== */
+.team{
+  background:var(--peach);
+}
+.team-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;
+}
+.member{
+  background:var(--cream);border-radius:28px;padding:28px;
+  text-align:center;position:relative;
+  box-shadow:5px 6px 0 rgba(42,27,18,.1);
+  transform:rotate(var(--r,0));
+  transition:transform .3s;
+  border:2px solid rgba(42,27,18,.06);
+}
+.member:hover{transform:rotate(0) translateY(-6px)}
+.member:nth-child(1){--r:-2deg}
+.member:nth-child(2){--r:1.5deg}
+.member:nth-child(3){--r:-1deg}
+.member:nth-child(4){--r:2deg}
+.avatar{
+  width:120px;height:120px;border-radius:50%;margin:0 auto 20px;
+  background:var(--blue);display:flex;align-items:center;justify-content:center;
+  font-family:'Bakbak One';font-size:48px;color:var(--cream);
+  position:relative;overflow:hidden;
+  border:4px solid var(--cream);
+  box-shadow:0 0 0 3px rgba(42,27,18,.08);
+}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.member:nth-child(1) .avatar{background:var(--blue);box-shadow:0 0 0 3px var(--blue-deep)}
+.member:nth-child(2) .avatar{background:var(--orange);box-shadow:0 0 0 3px var(--orange-deep)}
+.member:nth-child(3) .avatar{background:var(--peach-deep);box-shadow:0 0 0 3px var(--orange)}
+.member:nth-child(4) .avatar{background:var(--blue-deep);box-shadow:0 0 0 3px var(--orange)}
+.member:nth-child(1){background:#FBEBD6}
+.member:nth-child(2){background:#FDE3D0}
+.member:nth-child(3){background:#E6F0F9}
+.member:nth-child(4){background:#FBF4E3}
+.member-name{font-family:'Bakbak One';font-size:26px;margin-bottom:4px}
+.member-role{font-size:13px;opacity:.7;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+
+/* ========== CONTACT ========== */
+.contact{
+  background:var(--ink);color:var(--cream);
+  text-align:center;overflow:hidden;
+}
+.contact .sec-title{color:var(--cream)}
+.contact-huge{
+  font-family:'Bakbak One';font-size:clamp(56px,10vw,160px);line-height:.9;
+  margin-bottom:40px;
+}
+.contact-huge .line2{color:var(--orange);display:block;transform:rotate(-2deg)}
+.contact-links{
+  display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:32px;
+}
+.contact-link{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:18px 28px;border-radius:999px;
+  background:rgba(247,238,219,.1);color:var(--cream);text-decoration:none;
+  font-weight:600;font-size:16px;
+  border:1.5px solid rgba(247,238,219,.2);
+  transition:all .2s;
+}
+.contact-link:hover{background:var(--orange);border-color:var(--orange);transform:translateY(-2px)}
+.contact-link .icon{
+  width:32px;height:32px;border-radius:50%;background:var(--cream);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;
+  font-family:'Bakbak One';font-size:14px;
+}
+.contact-bubbles{
+  position:absolute;inset:0;pointer-events:none;opacity:.15;
+}
+.contact-bubble{
+  position:absolute;border-radius:50% 50% 50% 10%;background:var(--orange);
+}
+
+.foot{
+  padding:30px 6vw;text-align:center;font-size:13px;opacity:.5;
+  background:var(--ink);color:var(--cream);
+  border-top:1px solid rgba(247,238,219,.1);
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:900px){
+  .nav{top:auto;bottom:20px;max-width:calc(100% - 24px)}
+  .hero{grid-template-columns:1fr;padding:100px 6vw 60px;gap:24px}
+  .hero-right{min-height:360px}
+  .hero h1{font-size:clamp(56px,14vw,96px)}
+  .hero h1 .l2{margin-left:16px}
+  .stats{grid-template-columns:1fr}
+  .quotes{grid-template-columns:1fr}
+  .quote.old{margin-top:0}
+  .gen-strip{grid-template-columns:1fr 1fr;gap:12px}
+  .gen-strip .gen-card:nth-child(5){grid-column:1/-1}
+  .concept-grid{grid-template-columns:1fr;gap:32px}
+  .deck-stage{max-width:min(420px, 82vw)}
+  .steps{grid-template-columns:1fr;gap:20px}
+  .steps::before{display:none}
+  .goal-wrap{grid-template-columns:1fr;gap:32px}
+  .goal-huge{font-size:clamp(72px,22vw,140px)}
+  .team-grid{grid-template-columns:1fr 1fr}
+  .contact-huge{font-size:clamp(48px,14vw,96px)}
+  .contact-links{flex-direction:column;align-items:stretch}
+  .contact-link{justify-content:center}
+  .nav a:not(.brand-link){display:none}
+  .sec-title{font-size:clamp(36px,8vw,56px)}
+}
+@media(max-width:480px){
+  .hero{padding:90px 5vw 50px}
+  .hero h1{font-size:clamp(48px,13vw,72px)}
+  .hero h1 .l2{margin-left:8px}
+  .hero-cta .btn{width:100%;justify-content:center}
+  .deck-ctrls{gap:10px}
+  .deck-btn{width:48px;height:48px}
+  .deck-btn.main{width:56px;height:56px}
+  section{padding-left:5vw;padding-right:5vw}
+  .gen-strip{grid-template-columns:1fr}
+  .gen-strip .gen-card:nth-child(5){grid-column:auto}
+}
+/* prevent horizontal scroll anywhere */
+html,body{overflow-x:hidden;max-width:100vw}
+
+/* ========== TWEAKS PANEL ========== */
+.tweaks{
+  position:fixed;right:20px;bottom:20px;z-index:500;
+  background:var(--cream);border-radius:20px;padding:18px;
+  box-shadow:0 10px 40px rgba(42,27,18,.25);
+  border:2px solid var(--ink);
+  display:none;width:260px;
+  font-family:'DM Sans';
+}
+.tweaks.visible{display:block}
+.tweaks h4{font-family:'Bakbak One';font-size:18px;margin-bottom:10px}
+.tweaks label{display:block;font-size:12px;font-weight:600;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.1em}
+.tweaks .choices{display:flex;gap:6px;flex-wrap:wrap}
+.tweaks button{
+  padding:8px 12px;border-radius:999px;border:1.5px solid var(--ink);
+  background:var(--cream);font-family:'DM Sans';font-weight:600;font-size:12px;
+  cursor:pointer;
+}
+.tweaks button.on{background:var(--orange);color:var(--cream);border-color:var(--orange)}
+
+/* THEME: confetti */
+body.theme-confetti .hero{
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(232,90,26,.25), transparent 50%),
+    radial-gradient(ellipse 70% 60% at 80% 80%, rgba(189,215,236,.6), transparent 50%),
+    var(--cream-warm);
+}
+body.theme-confetti .hero h1{color:var(--orange)}
+body.theme-confetti .hero h1 .amp{color:var(--blue-deep)}
+
+/* THEME: zine / bold */
+body.theme-zine{--peach:#FFD6B8}
+body.theme-zine .hero{
+  background:var(--ink);
+}
+body.theme-zine .hero h1{color:var(--orange)}
+body.theme-zine .hero h1 .amp{color:var(--blue)}
+body.theme-zine .hero-lead,body.theme-zine .hero-eyebrow{color:var(--cream)}
+body.theme-zine .hero-eyebrow{background:var(--orange);color:var(--cream)}
+body.theme-zine .hero-scroll{color:var(--cream)}
+body.theme-zine .hero-scroll .arrow{background:var(--cream)}
+</style>
+</head>
+<body>
+
+<!-- ============== NAV ============== -->
+<nav class="nav">
+  <a href="#top" class="brand-link" aria-label="Klets & Kloof home">
+    <span class="brand-dot" aria-hidden="true">
+      <svg viewBox="0 0 54 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- blue bubble (back) -->
+        <path d="M6 16 C6 8, 12 4, 20 4 L28 4 C36 4, 42 8, 42 16 L42 22 C42 28, 38 31, 32 31 L20 31 L14 37 L16 31 C10 30, 6 27, 6 22 Z" fill="#BDD7EC" stroke="#2A1B12" stroke-width="2" stroke-linejoin="round"/>
+        <!-- orange bubble (front) -->
+        <path d="M18 20 C18 13, 23 9, 30 9 L42 9 C49 9, 52 13, 52 20 L52 26 C52 32, 48 35, 42 35 L34 35 L28 41 L30 35 C22 34, 18 31, 18 26 Z" fill="#E85A1A" stroke="#2A1B12" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </a>
+  <a href="#probleem">Probleem</a>
+  <a href="#concept">Concept</a>
+  <a href="#doel">Doel</a>
+  <a href="#partner">Partner</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- ============== HERO ============== -->
+<header class="hero" id="top" data-screen-label="01 Hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow"><span class="dot"></span>Een Issue Killers Campagne · 2026</div>
+    <h1 class="display">
+      <span class="l1">KLETS <span class="amp">&amp;</span></span>
+      <span class="l2">KLOOF</span>
+    </h1>
+    <div class="hero-tagline">Praat met de generaties</div>
+    <p class="hero-lead">
+      Op de werkvloer botsen werkmentaliteiten van jong en oud.
+      Wij maken die kloof bespreekbaar · met bierviltjes bij de borrel die het gesprek starten waar het juist stil blijft.
+    </p>
+    <div class="hero-cta">
+      <a href="#concept" class="btn btn-primary">Bekijk het concept →</a>
+      <a href="#probleem" class="btn btn-secondary">Wat speelt er?</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="bubble-stack">
+      <!-- floating bierviltjes mockup -->
+      <img class="hero-mockup" src="assets/bierviltjes-mockup.png" alt="Klets & Kloof bierviltjes" />
+
+      <!-- decorative orbiting bits -->
+      <span class="orbit orbit-1"></span>
+      <span class="orbit orbit-2"></span>
+      <span class="orbit orbit-3"></span>
+
+      <div class="sparkle spark-a" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><g stroke="#E85A1A" stroke-width="5" stroke-linecap="round" fill="none">
+          <line x1="50" y1="12" x2="50" y2="32"/>
+          <line x1="50" y1="68" x2="50" y2="88"/>
+          <line x1="12" y1="50" x2="32" y2="50"/>
+          <line x1="68" y1="50" x2="88" y2="50"/>
+        </g></svg>
+      </div>
+      <div class="sparkle spark-b" aria-hidden="true">
+        <svg viewBox="0 0 100 100"><g stroke="#BDD7EC" stroke-width="6" stroke-linecap="round" fill="none">
+          <line x1="50" y1="18" x2="50" y2="82"/>
+          <line x1="18" y1="50" x2="82" y2="50"/>
+          <line x1="26" y1="26" x2="74" y2="74"/>
+          <line x1="74" y1="26" x2="26" y2="74"/>
+        </g></svg>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <span class="arrow"></span>
+  </div>
+</header>
+
+<!-- ============== PROBLEM ============== -->
+<section class="problem" id="probleem" data-screen-label="02 Probleem">
+  <div class="sec-label"><span class="num">1</span>Het probleem</div>
+  <h2 class="sec-title">Een onuitgesproken kloof<br>tussen jong en oud.</h2>
+  <p class="problem-intro">
+    Jongeren hechten steeds meer waarde aan een goede werk-privébalans en willen hun mentale gezondheid beschermen. <strong>Oudere generaties begrijpen dit vaak niet</strong> en zien deze houding soms als luiheid. Dat leidt tot irritaties, spanningen en uiteindelijk tot een flinke kloof op de werkvloer · eentje die niemand hardop benoemt.
+  </p>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="big">57%</span>
+      <div class="label">van de werkende jongeren (&lt;35) ervaart veel tot zeer veel werkstress.</div>
+      <div class="src">FNV, 2.500 jongeren · Senstius 2026</div>
+    </div>
+    <div class="stat">
+      <span class="big">70%</span>
+      <div class="label">van die jongeren ervaart die stress minstens wekelijks.</div>
+      <div class="src">FNV-onderzoek · Senstius 2026</div>
+    </div>
+    <div class="stat">
+      <span class="big">60%</span>
+      <div class="label">van (voornamelijk 50+) ondernemers vindt dat jongeren hun privéleven te vaak vooropstellen.</div>
+      <div class="src">Onderzoek o.l.v. Karthaus, 2025</div>
+    </div>
+  </div>
+
+  <div class="quotes-wrap">
+    <div class="quotes">
+      <div class="quote young">
+        "Ik ben niet lui · ik wil alleen niet opgebrand raken."
+        <span class="who">- Jongere werknemer, Gen Z</span>
+      </div>
+      <div class="quote old">
+        "Ik snap niet waarom werk niet op 1 staat."
+        <span class="who">- Werkgever, 50+</span>
+      </div>
+      <div class="vs-badge">VS</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== GENERATIONS ============== -->
+<section class="generations" data-screen-label="03 Generaties">
+  <div class="sec-label"><span class="num">2</span>Wie zit er aan tafel?</div>
+  <h2 class="sec-title">Vijf generaties,<br>vijf werkethieken.</h2>
+  <p class="problem-intro" style="max-width:620px">
+    Van Boomers tot Alpha · iedereen brengt een eigen kijk op werk mee. Hoveren voor een blik op de verschillen.
+  </p>
+  <div class="gen-strip">
+    <div class="gen-card">
+      <span class="gen-emoji">B</span>
+      <div class="gen-years">1946 · 1964</div>
+      <div class="gen-name">Boomers</div>
+      <div class="gen-desc">Loyaal, sterke werkethiek. Werk is geen baan, maar een carrière. Houden van duidelijkheid.</div>
+    </div>
+    <div class="gen-card">
+      <span class="gen-emoji">X</span>
+      <div class="gen-years">1965 · 1980</div>
+      <div class="gen-name">Gen X</div>
+      <div class="gen-desc">De brug tussen oud en jong. Zelfstandig, balans belangrijk, structuur prettig.</div>
+    </div>
+    <div class="gen-card">
+      <span class="gen-emoji">M</span>
+      <div class="gen-years">1981 · 1996</div>
+      <div class="gen-name">Millennials</div>
+      <div class="gen-desc">Flexibiliteit, betekenisvol werk en groei. Sociaal en maatschappelijk betrokken.</div>
+    </div>
+    <div class="gen-card">
+      <span class="gen-emoji">Z</span>
+      <div class="gen-years">1997 · 2012</div>
+      <div class="gen-name">Gen Z</div>
+      <div class="gen-desc">Digital natives. Diversiteit, directe feedback, ruimte om zichzelf te zijn.</div>
+    </div>
+    <div class="gen-card">
+      <span class="gen-emoji">α</span>
+      <div class="gen-years">2013 -</div>
+      <div class="gen-name">Alpha</div>
+      <div class="gen-desc">Opgegroeid met AI. Creativiteit, autonomie en duurzaamheid worden centraal.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONCEPT ============== -->
+<section class="concept" id="concept" data-screen-label="04 Concept">
+  <div class="sec-label"><span class="num">3</span>Ons concept</div>
+  <h2 class="sec-title">Bierviltjes die<br>het ijs breken.</h2>
+  <div class="concept-grid">
+    <div class="concept-text">
+      <p>
+        <strong>Klets &amp; Kloof</strong> is een stapeltje gesprekstarter-bierviltjes met pittige stellingen en vragen, bedoeld voor bij de borrel · op tafel, naast je biertje, tussen de bitterballen.
+      </p>
+      <p>
+        Geen trainingen, geen vergaderingen. Gewoon: pak een viltje, lees 'm hardop en kijk wat er gebeurt. Collega's uit verschillende generaties delen opeens waar ze anders omheen zouden draaien.
+      </p>
+      <p>
+        De toon? <strong>Informeel, speels, uitnodigend.</strong> Want een goed gesprek begint nooit met een memo.
+      </p>
+      <a href="#hoe" class="btn btn-primary" style="margin-top:8px">Zo werkt het →</a>
+    </div>
+    <div>
+      <div class="deck-stage" id="deckStage">
+        <!-- cards injected by JS -->
+      </div>
+      <div class="deck-ctrls">
+        <button class="deck-btn" id="prevCard" title="Vorige">←</button>
+        <button class="deck-btn main" id="shuffleCard" title="Schud">⇆</button>
+        <button class="deck-btn" id="nextCard" title="Volgende">→</button>
+        <div class="deck-counter" id="deckCounter">01 / 13</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== HOW IT WORKS ============== -->
+<section class="how" id="hoe" data-screen-label="05 Hoe het werkt">
+  <div class="sec-label"><span class="num">4</span>Zo werkt het</div>
+  <h2 class="sec-title">Drie stappen naar<br>een echt gesprek.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Viltjes bij de borrel</div>
+      <div class="step-desc">We leveren een stapeltje Klets &amp; Kloof-bierviltjes. Die komen op de statafels te liggen tijdens de vrijdagmiddagborrel · waar collega's sowieso al samenkomen.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Lees een stelling</div>
+      <div class="step-desc">Iemand pakt een viltje onder zijn glas vandaan. Een stelling als <em>"Werk moet passen bij je privéleven, niet andersom"</em> · en plotseling ligt het onderwerp op tafel.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Ga het gesprek aan</div>
+      <div class="step-desc">Boomer, Gen X, Millennial, Gen Z · iedereen reageert anders. En daarin zit precies waar we naartoe willen: <b>begrip</b>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== GOAL ============== -->
+<section class="goal" id="doel" data-screen-label="06 Doel">
+  <div class="goal-wrap">
+    <div>
+      <div class="sec-label"><span class="num">5</span>Ons doel</div>
+      <div class="goal-huge">
+        <span class="plus">+</span><span class="pct">10%</span>
+      </div>
+      <div class="goal-sub">meer begrip<br>in 6 weken.</div>
+    </div>
+    <div>
+      <p class="goal-desc">
+        Bij twee werkvloeren meten we met een korte vragenlijst <b>vóór</b> en <b>na</b> het gebruik van de bierviltjes hoeveel begrip werknemers hebben voor andere generaties. Ons doel: minimaal 10% groei · meetbaar, eerlijk, realistisch.
+      </p>
+      <div class="smart">
+        <span><b>S</b>pecifiek</span>
+        <span><b>M</b>eetbaar</span>
+        <span><b>A</b>cceptabel</span>
+        <span><b>R</b>ealistisch</span>
+        <span><b>T</b>ijdsgebonden</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== PARTNER ============== -->
+<section class="partner" id="partner" data-screen-label="07 Partner">
+  <div class="partner-inner">
+    <div class="sec-label" style="justify-content:center"><span class="num">6</span>In samenwerking met</div>
+    <div class="partner-logo-wrap">
+      <img src="assets/issue-killers-logo.png" alt="Issue Killers" />
+    </div>
+    <p class="partner-text">
+      Klets &amp; Kloof is gemaakt in het kader van <span class="highlight"><b>Issue Killers</b></span> · een campagne-project waarin wij als team een maatschappelijk issue aanpakken. Wij kozen de <span class="highlight"><b>generatiekloof op de werkvloer</b></span>, omdat we 'm zelf voelen en er té weinig over wordt gepraat.
+    </p>
+  </div>
+</section>
+
+<!-- ============== TEAM ============== -->
+<section class="team" data-screen-label="08 Team">
+  <div class="sec-label"><span class="num">7</span>Het team</div>
+  <h2 class="sec-title">Vier studenten<br>met een missie.</h2>
+  <div class="team-grid">
+    <div class="member">
+      <div class="avatar"><img src="assets/team/jelle.jpg" alt="Jelle" style="object-position:center 5%"></div>
+      <div class="member-name">Jelle</div>
+    </div>
+    <div class="member">
+      <div class="avatar"><img src="assets/team/josien.jpg" alt="Josien"></div>
+      <div class="member-name">Josien</div>
+    </div>
+    <div class="member">
+      <div class="avatar"><img src="assets/team/laura.jpg" alt="Laura"></div>
+      <div class="member-name">Laura</div>
+    </div>
+    <div class="member">
+      <div class="avatar"><img src="assets/team/alyssa.jpg" alt="Alyssa"></div>
+      <div class="member-name">Alyssa</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONTACT ============== -->
+<section class="contact" id="contact" data-screen-label="09 Contact">
+  <div class="contact-bubbles">
+    <div class="contact-bubble" style="width:240px;height:240px;top:10%;left:-5%;"></div>
+    <div class="contact-bubble" style="width:180px;height:180px;bottom:10%;right:-3%;background:var(--blue);"></div>
+  </div>
+  <div class="sec-label" style="justify-content:center;color:var(--cream)"><span class="num">8</span>Kom kletsen</div>
+  <div class="contact-huge">
+    <span>LATEN WE</span>
+    <span class="line2">PRATEN.</span>
+  </div>
+  <div class="contact-links">
+    <a class="contact-link" href="https://www.linkedin.com/in/klets-en-kloof/" target="_blank">
+      <span class="icon">in</span>LinkedIn
+    </a>
+    <a class="contact-link" href="https://www.instagram.com/kletsenkloof/" target="_blank">
+      <span class="icon">ig</span>@kletsenkloof
+    </a>
+    <a class="contact-link" href="mailto:kletsenkloof@outlook.com">
+      <span class="icon">@</span>kletsenkloof@outlook.com
+    </a>
+  </div>
+</section>
+
+<div class="foot">© 2026 Klets &amp; Kloof · Issue Killers · Jelle, Josien, Laura &amp; Alyssa</div>
+
+<!-- ============== TWEAKS ============== -->
+<div class="tweaks" id="tweaks">
+  <h4>Tweaks</h4>
+  <label>Thema</label>
+  <div class="choices" data-group="theme">
+    <button data-val="default" class="on">Klassiek</button>
+    <button data-val="confetti">Confetti</button>
+    <button data-val="zine">Zine</button>
+  </div>
+  <label>Viltjes-stijl</label>
+  <div class="choices" data-group="deck">
+    <button data-val="stack" class="on">Stapel</button>
+    <button data-val="fan">Waaier</button>
+    <button data-val="scatter">Verstrooid</button>
+  </div>
+  <label>Hero-bubbels</label>
+  <div class="choices" data-group="bubbles">
+    <button data-val="on" class="on">Aan</button>
+    <button data-val="off">Uit</button>
+  </div>
+</div>
+
+<script>
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "confetti",
+  "deck": "fan",
+  "bubbles": "on"
+}/*EDITMODE-END*/;
+
+const cardData = [
+  { img: "assets/cards/c01.png" },
+  { img: "assets/cards/c02.png" },
+  { img: "assets/cards/c03.png" },
+  { img: "assets/cards/c04.png" },
+  { img: "assets/cards/c05.png" },
+  { img: "assets/cards/c06.png" },
+  { img: "assets/cards/c07.png" },
+  { img: "assets/cards/c08.png" },
+  { img: "assets/cards/c09.png" },
+  { img: "assets/cards/c10.png" },
+  { img: "assets/cards/c11.png" },
+  { img: "assets/cards/c12.png" },
+  { img: "assets/cards/c13.png" },
+];
+
+const stage = document.getElementById('deckStage');
+const counter = document.getElementById('deckCounter');
+let deckIndex = 0;
+let deckStyle = TWEAK_DEFAULTS.deck;
+
+function buildDeck(){
+  stage.innerHTML = '';
+  cardData.forEach((c, i) => {
+    const el = document.createElement('div');
+    el.className = 'card-item';
+    el.dataset.i = i;
+    el.innerHTML = `<img src="${c.img}" alt="" draggable="false">`;
+    stage.appendChild(el);
+  });
+  layoutDeck();
+}
+function layoutDeck(){
+  const cards = [...stage.querySelectorAll('.card-item')];
+  const n = cards.length;
+  // scale offsets relative to actual stage width so cards never escape the column
+  const stageW = stage.clientWidth || 520;
+  const k = stageW / 520; // base reference width
+  cards.forEach((el, i) => {
+    const rel = (i - deckIndex + n) % n;
+    let x=0,y=0,rot=0,z=n-rel,scale=1,opacity=1;
+    if(deckStyle==='stack'){
+      const offset = Math.min(rel, 4);
+      x = offset*6*k; y = offset*6*k; rot = (offset%2?-1:1)*offset*1.2; scale = 1 - offset*0.03;
+      if(rel>4){opacity=0}
+    } else if(deckStyle==='fan'){
+      const offset = Math.min(rel, 5);
+      rot = (offset - 2)*6; x = (offset-2)*18*k; y = Math.abs(offset-2)*8*k; scale = 1 - offset*0.02;
+      if(rel>5){opacity=0}
+    } else { // scatter
+      const offset = Math.min(rel, 6);
+      const seed = (i+1)*13 % 100;
+      rot = ((seed%30)-15) * (offset?1:0);
+      x = ((seed%60)-30) * (offset*0.5) * k;
+      y = (((seed*3)%60)-30) * (offset*0.4) * k;
+      scale = 1 - offset*0.04;
+      if(rel>6){opacity=0}
+    }
+    el.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg) scale(${scale})`;
+    el.style.zIndex = z;
+    el.style.opacity = opacity;
+  });
+  counter.textContent = String(deckIndex+1).padStart(2,'0')+' / '+String(n).padStart(2,'0');
+}
+function nextCard(){ deckIndex = (deckIndex+1) % cardData.length; layoutDeck(); }
+function prevCard(){ deckIndex = (deckIndex-1+cardData.length) % cardData.length; layoutDeck(); }
+function shuffleDeck(){
+  for(let i=cardData.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [cardData[i],cardData[j]]=[cardData[j],cardData[i]];
+  }
+  deckIndex = 0;
+  buildDeck();
+}
+document.getElementById('nextCard').addEventListener('click', nextCard);
+document.getElementById('prevCard').addEventListener('click', prevCard);
+document.getElementById('shuffleCard').addEventListener('click', shuffleDeck);
+
+// click on top card advances
+stage.addEventListener('click', (e)=>{
+  const c = e.target.closest('.card-item');
+  if(c && parseInt(c.dataset.i)===deckIndex) nextCard();
+});
+
+buildDeck();
+window.addEventListener('resize', layoutDeck);
+
+// ========== TWEAKS ==========
+const tweakState = { ...TWEAK_DEFAULTS };
+function applyTweaks(){
+  document.body.classList.remove('theme-default','theme-confetti','theme-zine');
+  document.body.classList.add('theme-'+tweakState.theme);
+  deckStyle = tweakState.deck;
+  layoutDeck();
+  document.querySelector('.bubble-stack').style.display = tweakState.bubbles==='off' ? 'none' : '';
+  document.querySelectorAll('.tweaks .choices').forEach(g=>{
+    const key = g.dataset.group;
+    g.querySelectorAll('button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.val===tweakState[key]);
+    });
+  });
+}
+applyTweaks();
+
+document.querySelectorAll('.tweaks .choices button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const key = btn.parentElement.dataset.group;
+    tweakState[key] = btn.dataset.val;
+    applyTweaks();
+    try{
+      window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[key]: btn.dataset.val}}, '*');
+    }catch(e){}
+  });
+});
+
+// Edit mode listener
+window.addEventListener('message', (e)=>{
+  if(!e.data) return;
+  if(e.data.type==='__activate_edit_mode') document.getElementById('tweaks').classList.add('visible');
+  else if(e.data.type==='__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('visible');
+});
+try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+
+// Smooth scroll for nav
+document.querySelectorAll('.nav a').forEach(a=>{
+  a.addEventListener('click', (e)=>{
+    const h = a.getAttribute('href');
+    if(h.startsWith('#')){
+      e.preventDefault();
+      const t = document.querySelector(h);
+      if(t) window.scrollTo({top: t.offsetTop - 40, behavior:'smooth'});
+    }
+  });
+});
+</script>
+</body>
+</html>
