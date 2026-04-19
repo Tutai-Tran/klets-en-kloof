@@ -1040,14 +1040,14 @@ window.addEventListener('message', (e)=>{
 });
 try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
 
-// Smooth scroll for nav
-document.querySelectorAll('.nav a').forEach(a=>{
+// Smooth scroll for all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
   a.addEventListener('click', (e)=>{
     const h = a.getAttribute('href');
-    if(h.startsWith('#')){
+    const t = document.querySelector(h);
+    if(t){
       e.preventDefault();
-      const t = document.querySelector(h);
-      if(t) window.scrollTo({top: t.offsetTop - 40, behavior:'smooth'});
+      window.scrollTo({top: t.offsetTop - 40, behavior:'smooth'});
     }
   });
 });
